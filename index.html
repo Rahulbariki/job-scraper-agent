@@ -94,7 +94,7 @@ textarea{resize:vertical;min-height:80px}
   </div>
 
   <div class="card">
-    <div class="sl"><div class="ico">??</div>Personal Info</div>
+    <div class="sl"><div class="ico">👤</div>Personal Info</div>
     <div class="grid">
       <div class="field"><label>Full Name</label><input type="text" id="fullName" placeholder="Rahul Kumar"/></div>
       <div class="field"><label>Email Address</label><input type="email" id="email" placeholder="you@example.com"/></div>
@@ -104,7 +104,7 @@ textarea{resize:vertical;min-height:80px}
   </div>
 
   <div class="card">
-    <div class="sl"><div class="ico">??</div>Job Preferences</div>
+    <div class="sl"><div class="ico">💼</div>Job Preferences</div>
     <div class="grid">
       <div class="field"><label>Target Role</label><input type="text" id="jobRole" placeholder="ML Engineer"/></div>
       <div class="field"><label>Experience Level</label>
@@ -148,7 +148,7 @@ textarea{resize:vertical;min-height:80px}
   </div>
 
   <div class="card">
-    <div class="sl"><div class="ico">??</div>Platforms to Scrape</div>
+    <div class="sl"><div class="ico">🎯</div>Platforms to Scrape</div>
     <div class="platforms">
       <label class="pt active"><input type="checkbox" id="chkLinkedIn" checked/><div class="dot"></div>LinkedIn</label>
       <label class="pt active"><input type="checkbox" id="chkNaukri" checked/><div class="dot"></div>Naukri</label>
@@ -162,7 +162,7 @@ textarea{resize:vertical;min-height:80px}
   </div>
 
   <div class="card">
-    <div class="sl"><div class="ico">?</div>n8n Webhook</div>
+    <div class="sl"><div class="ico">⚡</div>n8n Webhook</div>
     <div class="field">
       <label>Webhook URL</label>
       <div class="wrow">
@@ -172,7 +172,7 @@ textarea{resize:vertical;min-height:80px}
       <div class="wstatus"><div class="wdot"></div>Webhook URL configured — ready to trigger</div>
     </div>
     <div style="margin-top:20px">
-      <button class="sbtn" id="submitBtn" onclick="handleSubmit()">? Save Profile & Trigger n8n Workflow</button>
+      <button class="sbtn" id="submitBtn" onclick="handleSubmit()">Save Profile & Trigger n8n Workflow</button>
       <div class="status" id="statusMsg"></div>
     </div>
     <div style="margin-top:16px">
@@ -220,21 +220,22 @@ async function handleSubmit(){
   output.textContent=JSON.stringify(profile,null,2);
   output.classList.add('show');
   const url=document.getElementById('webhookUrl').value.trim();
-  if(!url){status.className='status show er';status.textContent='?? No webhook URL — use the JSON below in your n8n Code node.';return;}
+  if(!url){status.className='status show er';status.textContent='No webhook URL — use the JSON below in your n8n Code node.';return;}
   btn.disabled=true;btn.textContent='Sending to n8n...';
-  status.className='status show ld';status.textContent='? Posting profile to n8n webhook...';
+  status.className='status show ld';status.textContent='Posting profile to n8n webhook...';
   try{
     const res=await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)});
-    if(res.ok){status.className='status show ok';status.textContent='? Profile sent! Your n8n workflow is now running.';}
+    if(res.ok){status.className='status show ok';status.textContent='Profile sent! Your n8n workflow is now running.';}
     else throw new Error(`HTTP ${res.status}`);
   }catch(err){
     status.className='status show er';status.textContent=`? ${err.message} — check CORS settings or use the JSON below.`;
-  }finally{btn.disabled=false;btn.textContent='? Save Profile & Trigger n8n Workflow';}
+  }finally{btn.disabled=false;btn.textContent='Save Profile & Trigger n8n Workflow';}
   updateSteps();
 }
 </script>
 </body>
 </html>
+
 
 
 
