@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Job Hunter — n8n Agent</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#060912;--s1:#0d1424;--s2:#111d33;--b:#1a2d50;--a:#3b82f6;--a2:#06b6d4;--a3:#8b5cf6;--gold:#f59e0b;--text:#f1f5f9;--muted:#64748b;--ok:#10b981;--err:#ef4444}
+body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--text);min-height:100vh;padding:32px 16px;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 90% 60% at 50% -10%,rgba(59,130,246,.18) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 85% 90%,rgba(139,92,246,.12) 0%,transparent 55%),radial-gradient(ellipse 40% 30% at 10% 80%,rgba(6,182,212,.08) 0%,transparent 50%);pointer-events:none;z-index:0}
+.container{max-width:720px;margin:0 auto;position:relative;z-index:1}
+.header{text-align:center;margin-bottom:44px;animation:fd .7s ease}
+.badge{display:inline-flex;align-items:center;gap:7px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.25);color:var(--a2);font-size:11px;font-weight:600;letter-spacing:.1em;padding:6px 16px;border-radius:20px;margin-bottom:20px;text-transform:uppercase}
+.pulse{width:7px;height:7px;background:var(--a2);border-radius:50%;animation:p 2s infinite}
+h1{font-size:clamp(28px,5vw,40px);font-weight:900;line-height:1.1;margin-bottom:10px;letter-spacing:-.02em}
+h1 .g{background:linear-gradient(135deg,var(--a),var(--a2),var(--a3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{color:var(--muted);font-size:14px;font-weight:400;line-height:1.6}
+.card{background:linear-gradient(135deg,rgba(13,20,36,.9),rgba(17,29,51,.8));border:1px solid var(--b);border-radius:20px;padding:28px 28px 24px;margin-bottom:14px;animation:fu .5s ease both;backdrop-filter:blur(10px);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(59,130,246,.4),transparent)}
+.card:nth-child(1){animation-delay:.1s}.card:nth-child(2){animation-delay:.2s}.card:nth-child(3){animation-delay:.3s}.card:nth-child(4){animation-delay:.4s}
+.sl{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--a2);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.sl::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--b),transparent)}
+.sl .ico{width:22px;height:22px;background:rgba(6,182,212,.15);border:1px solid rgba(6,182,212,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid.full{grid-template-columns:1fr}
+.field{display:flex;flex-direction:column;gap:6px}
+label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+input,select,textarea{background:rgba(17,29,51,.8);border:1px solid var(--b);border-radius:12px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;padding:12px 15px;transition:all .2s;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(59,130,246,.12),inset 0 1px 0 rgba(255,255,255,.05)}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.5}
+select option{background:#111d33}
+textarea{resize:vertical;min-height:80px}
+.tag-wrap{background:rgba(17,29,51,.8);border:1px solid var(--b);border-radius:12px;padding:8px 10px;display:flex;flex-wrap:wrap;gap:6px;min-height:48px;cursor:text;transition:all .2s}
+.tag-wrap:focus-within{border-color:var(--a);box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.tag{display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(6,182,212,.12));border:1px solid rgba(59,130,246,.3);color:var(--a2);font-size:12px;font-weight:600;padding:3px 10px;border-radius:8px;animation:fu .2s ease}
+.tag button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0;transition:color .2s}
+.tag button:hover{color:var(--err)}
+.ti{background:transparent;border:none;outline:none;color:var(--text);font-size:13px;min-width:100px;flex:1;padding:2px 4px;box-shadow:none!important}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+.platforms{display:flex;gap:10px;flex-wrap:wrap}
+.pt{display:flex;align-items:center;gap:9px;background:rgba(17,29,51,.8);border:1px solid var(--b);border-radius:12px;padding:11px 18px;cursor:pointer;transition:all .25s;font-size:13px;font-weight:600;user-select:none;position:relative;overflow:hidden}
+.pt::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(6,182,212,.05));opacity:0;transition:opacity .25s}
+.pt.active{border-color:var(--a);color:var(--a2);box-shadow:0 0 16px rgba(59,130,246,.12)}
+.pt.active::before{opacity:1}
+.pt input{display:none}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--b);transition:all .25s}
+.pt.active .dot{background:var(--a2);box-shadow:0 0 8px var(--a2)}
+.wrow{display:flex;gap:8px}
+.wrow input{flex:1}
+.cbtn{background:rgba(17,29,51,.8);border:1px solid var(--b);color:var(--muted);border-radius:12px;padding:0 16px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s;white-space:nowrap}
+.cbtn:hover{border-color:var(--a);color:var(--a)}
+.wstatus{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;font-size:12px;font-weight:500;margin-top:8px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);color:var(--ok)}
+.wdot{width:8px;height:8px;background:var(--ok);border-radius:50%;animation:p 2s infinite}
+.sbtn{width:100%;background:linear-gradient(135deg,var(--a),var(--a2));border:none;border-radius:14px;color:#fff;font-family:'Inter',sans-serif;font-weight:700;font-size:15px;padding:17px;cursor:pointer;letter-spacing:.03em;transition:all .2s;margin-top:4px;position:relative;overflow:hidden}
+.sbtn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.1),transparent);opacity:0;transition:opacity .2s}
+.sbtn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,130,246,.35)}
+.sbtn:hover::before{opacity:1}
+.sbtn:active{transform:translateY(0)}
+.sbtn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.out{background:rgba(6,10,20,.8);border:1px solid var(--b);border-radius:12px;padding:16px;font-family:'Courier New',monospace;font-size:11px;color:var(--a2);line-height:1.75;overflow-x:auto;max-height:240px;overflow-y:auto;display:none}
+.out.show{display:block;animation:fu .3s ease}
+.status{display:none;align-items:center;gap:10px;padding:14px 16px;border-radius:12px;font-size:13px;font-weight:500;margin-top:12px}
+.status.show{display:flex;animation:fu .3s ease}
+.status.ok{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--ok)}
+.status.er{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--err)}
+.status.ld{background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:#93c5fd}
+.steps{display:flex;justify-content:center;gap:0;margin-bottom:32px}
+.step{display:flex;align-items:center;gap:0}
+.snum{width:28px;height:28px;border-radius:50%;border:1px solid var(--b);background:var(--s1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);transition:all .3s}
+.snum.act{border-color:var(--a);background:rgba(59,130,246,.15);color:var(--a)}
+.snum.done{border-color:var(--ok);background:rgba(16,185,129,.15);color:var(--ok)}
+.sline{width:40px;height:1px;background:var(--b)}
+@keyframes fd{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.3}}
+@media(max-width:540px){.grid{grid-template-columns:1fr}.platforms{flex-direction:column}.steps{gap:0}.sline{width:24px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="badge"><div class="pulse"></div> n8n Job Automation Agent</div>
+    <h1>Job Hunter<br/><span class="g">Profile & Settings</span></h1>
+    <p class="sub">Configure your profile — data is sent directly to your n8n workflow via webhook</p>
+  </div>
+
+  <div class="steps" id="steps">
+    <div class="step"><div class="snum act" id="s1">1</div></div>
+    <div class="step"><div class="sline"></div><div class="snum" id="s2">2</div></div>
+    <div class="step"><div class="sline"></div><div class="snum" id="s3">3</div></div>
+    <div class="step"><div class="sline"></div><div class="snum" id="s4">4</div></div>
+  </div>
+
+  <div class="card">
+    <div class="sl"><div class="ico">👤</div>Personal Info</div>
+    <div class="grid">
+      <div class="field"><label>Full Name</label><input type="text" id="fullName" placeholder="Rahul Kumar"/></div>
+      <div class="field"><label>Email Address</label><input type="email" id="email" placeholder="you@example.com"/></div>
+      <div class="field"><label>Phone Number</label><input type="tel" id="phone" placeholder="+91 98765 43210"/></div>
+      <div class="field"><label>Current Location</label><input type="text" id="location" placeholder="Nandyal, Andhra Pradesh"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sl"><div class="ico">💼</div>Job Preferences</div>
+    <div class="grid">
+      <div class="field"><label>Target Role</label><input type="text" id="jobRole" placeholder="ML Engineer"/></div>
+      <div class="field"><label>Experience Level</label>
+        <select id="experience">
+          <option value="">Select level</option>
+          <option value="fresher">Fresher (0 yrs)</option>
+          <option value="0-1">0–1 Years</option>
+          <option value="1-3">1–3 Years</option>
+          <option value="3-5">3–5 Years</option>
+          <option value="5+">5+ Years</option>
+        </select>
+      </div>
+      <div class="field"><label>Preferred Location</label><input type="text" id="prefLocation" placeholder="Remote / Hyderabad / India"/></div>
+      <div class="field"><label>Job Type</label>
+        <select id="jobType">
+          <option value="">Select type</option>
+          <option value="full-time">Full Time</option>
+          <option value="internship">Internship</option>
+          <option value="part-time">Part Time</option>
+          <option value="contract">Contract</option>
+          <option value="remote">Remote Only</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid full" style="margin-top:14px">
+      <div class="field">
+        <label>Skills (press Enter to add)</label>
+        <div class="tag-wrap" id="skillsWrap" onclick="document.getElementById('skillInput').focus()">
+          <input class="ti" id="skillInput" placeholder="e.g. Python, TensorFlow, React..."/>
+        </div>
+        <span class="hint">Add skills one by one — used as search keywords in the workflow</span>
+      </div>
+    </div>
+    <div class="grid full" style="margin-top:14px">
+      <div class="field">
+        <label>Extra Keywords</label>
+        <input type="text" id="keywords" placeholder="AI developer, ML engineer, data scientist"/>
+        <span class="hint">Comma-separated — used for LinkedIn & Naukri search queries</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sl"><div class="ico">🎯</div>Platforms to Scrape</div>
+    <div class="platforms">
+      <label class="pt active"><input type="checkbox" id="chkLinkedIn" checked/><div class="dot"></div>LinkedIn</label>
+      <label class="pt active"><input type="checkbox" id="chkNaukri" checked/><div class="dot"></div>Naukri</label>
+      <label class="pt"><input type="checkbox" id="chkIndeed"/><div class="dot"></div>Indeed</label>
+      <label class="pt"><input type="checkbox" id="chkWellfound"/><div class="dot"></div>Wellfound</label>
+    </div>
+    <div class="grid" style="margin-top:16px">
+      <div class="field"><label>Max Results / Platform</label><input type="number" id="maxResults" value="20" min="5" max="100"/></div>
+      <div class="field"><label>Send Report To Email</label><input type="email" id="reportEmail" placeholder="you@example.com"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sl"><div class="ico">⚡</div>n8n Webhook</div>
+    <div class="field">
+      <label>Webhook URL</label>
+      <div class="wrow">
+        <input type="url" id="webhookUrl" value="https://rahulonline4.app.n8n.cloud/webhook-test/5b81112e-aa1c-4cff-89c4-6891dd2fc66e"/>
+        <button class="cbtn" onclick="copyWebhook()">Copy</button>
+      </div>
+      <div class="wstatus"><div class="wdot"></div>Webhook URL configured — ready to trigger</div>
+    </div>
+    <div style="margin-top:20px">
+      <button class="sbtn" id="submitBtn" onclick="handleSubmit()">⚡ Save Profile & Trigger n8n Workflow</button>
+      <div class="status" id="statusMsg"></div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="sl" style="margin-bottom:10px"><div class="ico">{ }</div>Generated JSON Payload</div>
+      <pre class="out" id="outputBox"></pre>
+    </div>
+  </div>
+</div>
+
+<script>
+const skills=[];
+const skillInput=document.getElementById('skillInput');
+const skillsWrap=document.getElementById('skillsWrap');
+skillInput.addEventListener('keydown',e=>{
+  if((e.key==='Enter'||e.key===',')&&skillInput.value.trim()){e.preventDefault();addSkill(skillInput.value.trim().replace(/,/g,''));skillInput.value='';updateSteps();}
+  if(e.key==='Backspace'&&!skillInput.value&&skills.length)removeSkill(skills.length-1);
+});
+function addSkill(v){if(!v||skills.includes(v))return;skills.push(v);const t=document.createElement('div');t.className='tag';t.innerHTML=`${v}<button onclick="removeSkill(${skills.length-1})" title="Remove">×</button>`;skillsWrap.insertBefore(t,skillInput);}
+function removeSkill(i){skills.splice(i,1);renderSkills();}
+function renderSkills(){[...skillsWrap.querySelectorAll('.tag')].forEach(t=>t.remove());skills.forEach((s,i)=>{const t=document.createElement('div');t.className='tag';t.innerHTML=`${s}<button onclick="removeSkill(${i})" title="Remove">×</button>`;skillsWrap.insertBefore(t,skillInput);});}
+document.querySelectorAll('.pt').forEach(l=>{l.addEventListener('click',()=>{const cb=l.querySelector('input[type=checkbox]');setTimeout(()=>{l.classList.toggle('active',cb.checked);updateSteps();},0);});});
+function updateSteps(){
+  const s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3'),s4=document.getElementById('s4');
+  const p1=document.getElementById('fullName').value||document.getElementById('email').value;
+  const p2=document.getElementById('jobRole').value||skills.length;
+  const p3=[...document.querySelectorAll('.pt input')].some(c=>c.checked);
+  const p4=document.getElementById('webhookUrl').value;
+  s1.className='snum '+(p1?'done':'act');s2.className='snum '+(p2?'done':p1?'act':'');s3.className='snum '+(p3?'done':p2?'act':'');s4.className='snum '+(p4?'done':p3?'act':'');
+}
+['fullName','email','phone','location','jobRole','prefLocation','keywords','maxResults','reportEmail','webhookUrl'].forEach(id=>{document.getElementById(id).addEventListener('input',updateSteps);});
+function buildProfile(){
+  const platforms=[];
+  if(document.getElementById('chkLinkedIn').checked)platforms.push('LinkedIn');
+  if(document.getElementById('chkNaukri').checked)platforms.push('Naukri');
+  if(document.getElementById('chkIndeed').checked)platforms.push('Indeed');
+  if(document.getElementById('chkWellfound').checked)platforms.push('Wellfound');
+  return{user:{fullName:document.getElementById('fullName').value.trim()||'YOUR_FULL_NAME',email:document.getElementById('email').value.trim()||'',phone:document.getElementById('phone').value.trim()||'',location:document.getElementById('location').value.trim()||''},jobPreferences:{role:document.getElementById('jobRole').value.trim()||'ML Engineer',experience:document.getElementById('experience').value||'fresher',preferredLocation:document.getElementById('prefLocation').value.trim()||'India',jobType:document.getElementById('jobType').value||'full-time',skills:[...skills],keywords:document.getElementById('keywords').value.split(',').map(k=>k.trim()).filter(Boolean)},scraping:{platforms,maxResultsPerPlatform:parseInt(document.getElementById('maxResults').value)||20,reportEmail:document.getElementById('reportEmail').value.trim()||''},generatedAt:new Date().toISOString()};
+}
+function copyWebhook(){const url=document.getElementById('webhookUrl').value;if(url)navigator.clipboard.writeText(url);}
+async function handleSubmit(){
+  const btn=document.getElementById('submitBtn');
+  const status=document.getElementById('statusMsg');
+  const output=document.getElementById('outputBox');
+  const profile=buildProfile();
+  output.textContent=JSON.stringify(profile,null,2);
+  output.classList.add('show');
+  const url=document.getElementById('webhookUrl').value.trim();
+  if(!url){status.className='status show er';status.textContent='⚠️ No webhook URL — use the JSON below in your n8n Code node.';return;}
+  btn.disabled=true;btn.textContent='Sending to n8n...';
+  status.className='status show ld';status.textContent='⏳ Posting profile to n8n webhook...';
+  try{
+    const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)});
+    if(res.ok){status.className='status show ok';status.textContent='✅ Profile sent! Your n8n workflow is now running.';}
+    else throw new Error(`HTTP ${res.status}`);
+  }catch(err){
+    status.className='status show er';status.textContent=`❌ ${err.message} — check CORS settings or use the JSON below.`;
+  }finally{btn.disabled=false;btn.textContent='⚡ Save Profile & Trigger n8n Workflow';}
+  updateSteps();
+}
+</script>
+</body>
+</html>
