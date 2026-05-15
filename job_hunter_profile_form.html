@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Job Hunter — n8n Agent</title>
+<title>Job Hunter â€” n8n Agent</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -83,7 +83,7 @@ textarea{resize:vertical;min-height:80px}
   <div class="header">
     <div class="badge"><div class="pulse"></div> n8n Job Automation Agent</div>
     <h1>Job Hunter<br/><span class="g">Profile & Settings</span></h1>
-    <p class="sub">Configure your profile — data is sent directly to your n8n workflow via webhook</p>
+    <p class="sub">Configure your profile â€” data is sent directly to your n8n workflow via webhook</p>
   </div>
 
   <div class="steps" id="steps">
@@ -111,9 +111,9 @@ textarea{resize:vertical;min-height:80px}
         <select id="experience">
           <option value="">Select level</option>
           <option value="fresher">Fresher (0 yrs)</option>
-          <option value="0-1">0–1 Years</option>
-          <option value="1-3">1–3 Years</option>
-          <option value="3-5">3–5 Years</option>
+          <option value="0-1">0â€“1 Years</option>
+          <option value="1-3">1â€“3 Years</option>
+          <option value="3-5">3â€“5 Years</option>
           <option value="5+">5+ Years</option>
         </select>
       </div>
@@ -135,14 +135,14 @@ textarea{resize:vertical;min-height:80px}
         <div class="tag-wrap" id="skillsWrap" onclick="document.getElementById('skillInput').focus()">
           <input class="ti" id="skillInput" placeholder="e.g. Python, TensorFlow, React..."/>
         </div>
-        <span class="hint">Add skills one by one — used as search keywords in the workflow</span>
+        <span class="hint">Add skills one by one â€” used as search keywords in the workflow</span>
       </div>
     </div>
     <div class="grid full" style="margin-top:14px">
       <div class="field">
         <label>Extra Keywords</label>
         <input type="text" id="keywords" placeholder="AI developer, ML engineer, data scientist"/>
-        <span class="hint">Comma-separated — used for LinkedIn & Naukri search queries</span>
+        <span class="hint">Comma-separated â€” used for LinkedIn & Naukri search queries</span>
       </div>
     </div>
   </div>
@@ -169,7 +169,7 @@ textarea{resize:vertical;min-height:80px}
         <input type="url" id="webhookUrl" value="https://rahulonline4.app.n8n.cloud/webhook/b5be7b70-0b3f-468d-b754-756a27c9acc0"/>
         <button class="cbtn" onclick="copyWebhook()">Copy</button>
       </div>
-      <div class="wstatus"><div class="wdot"></div>Webhook URL configured — ready to trigger</div>
+      <div class="wstatus"><div class="wdot"></div>Webhook URL configured â€” ready to trigger</div>
     </div>
     <div style="margin-top:20px">
       <button class="sbtn" id="submitBtn" onclick="handleSubmit()">? Save Profile & Trigger n8n Workflow</button>
@@ -190,9 +190,9 @@ skillInput.addEventListener('keydown',e=>{
   if((e.key==='Enter'||e.key===',')&&skillInput.value.trim()){e.preventDefault();addSkill(skillInput.value.trim().replace(/,/g,''));skillInput.value='';updateSteps();}
   if(e.key==='Backspace'&&!skillInput.value&&skills.length)removeSkill(skills.length-1);
 });
-function addSkill(v){if(!v||skills.includes(v))return;skills.push(v);const t=document.createElement('div');t.className='tag';t.innerHTML=`${v}<button onclick="removeSkill(${skills.length-1})" title="Remove">×</button>`;skillsWrap.insertBefore(t,skillInput);}
+function addSkill(v){if(!v||skills.includes(v))return;skills.push(v);const t=document.createElement('div');t.className='tag';t.innerHTML=`${v}<button onclick="removeSkill(${skills.length-1})" title="Remove">Ã—</button>`;skillsWrap.insertBefore(t,skillInput);}
 function removeSkill(i){skills.splice(i,1);renderSkills();}
-function renderSkills(){[...skillsWrap.querySelectorAll('.tag')].forEach(t=>t.remove());skills.forEach((s,i)=>{const t=document.createElement('div');t.className='tag';t.innerHTML=`${s}<button onclick="removeSkill(${i})" title="Remove">×</button>`;skillsWrap.insertBefore(t,skillInput);});}
+function renderSkills(){[...skillsWrap.querySelectorAll('.tag')].forEach(t=>t.remove());skills.forEach((s,i)=>{const t=document.createElement('div');t.className='tag';t.innerHTML=`${s}<button onclick="removeSkill(${i})" title="Remove">Ã—</button>`;skillsWrap.insertBefore(t,skillInput);});}
 document.querySelectorAll('.pt').forEach(l=>{l.addEventListener('click',()=>{const cb=l.querySelector('input[type=checkbox]');setTimeout(()=>{l.classList.toggle('active',cb.checked);updateSteps();},0);});});
 function updateSteps(){
   const s1=document.getElementById('s1'),s2=document.getElementById('s2'),s3=document.getElementById('s3'),s4=document.getElementById('s4');
@@ -220,18 +220,19 @@ async function handleSubmit(){
   output.textContent=JSON.stringify(profile,null,2);
   output.classList.add('show');
   const url=document.getElementById('webhookUrl').value.trim();
-  if(!url){status.className='status show er';status.textContent='?? No webhook URL — use the JSON below in your n8n Code node.';return;}
+  if(!url){status.className='status show er';status.textContent='?? No webhook URL â€” use the JSON below in your n8n Code node.';return;}
   btn.disabled=true;btn.textContent='Sending to n8n...';
   status.className='status show ld';status.textContent='? Posting profile to n8n webhook...';
   try{
-    const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)});
+    const res=await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)});
     if(res.ok){status.className='status show ok';status.textContent='? Profile sent! Your n8n workflow is now running.';}
     else throw new Error(`HTTP ${res.status}`);
   }catch(err){
-    status.className='status show er';status.textContent=`? ${err.message} — check CORS settings or use the JSON below.`;
+    status.className='status show er';status.textContent=`? ${err.message} â€” check CORS settings or use the JSON below.`;
   }finally{btn.disabled=false;btn.textContent='? Save Profile & Trigger n8n Workflow';}
   updateSteps();
 }
 </script>
 </body>
 </html>
+
