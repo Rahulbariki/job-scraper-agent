@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -225,10 +225,10 @@ async function handleSubmit(){
   status.className='status show ld';status.textContent='Posting profile to n8n webhook...';
   try{
     const res=await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)});
-    if(res.ok){status.className='status show ok';status.textContent='Profile sent! Your n8n workflow is now running.';}
+    if(res.type==='opaque'||res.ok){status.className='status show ok';status.textContent='Profile sent! Your n8n workflow is now running.';}
     else throw new Error(`HTTP ${res.status}`);
   }catch(err){
-    status.className='status show er';status.textContent=`? ${err.message} — check CORS settings or use the JSON below.`;
+    status.className='status show er';status.textContent=`${err.message} — check CORS settings or use the JSON below.`;
   }finally{btn.disabled=false;btn.textContent='Save Profile & Trigger n8n Workflow';}
   updateSteps();
 }
