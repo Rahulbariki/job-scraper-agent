@@ -224,12 +224,24 @@ async function handleSubmit(){
   btn.disabled=true;btn.textContent='Sending to n8n...';
   status.className='status show ld';status.textContent='Posting profile to n8n webhook...';
   try{
-    const res=await fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(profile)});
-    if(res.type==='opaque'||res.ok){status.className='status show ok';status.textContent='Profile sent! Your n8n workflow is now running.';}
-    else throw new Error(`HTTP ${res.status}`);
+    // To bypass CORS preflight blocking the POST, we use text/plain and no-cors.
+    // n8n will still receive the body.
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(profile)
+    });
+    // no-cors always succeeds unless there's a network-level error
+    status.className='status show ok';
+    status.textContent='Profile sent! Your n8n workflow is now running.';
   }catch(err){
-    status.className='status show er';status.textContent=`${err.message} — check CORS settings or use the JSON below.`;
-  }finally{btn.disabled=false;btn.textContent='Save Profile & Trigger n8n Workflow';}
+    status.className='status show er';
+    status.textContent=`${err.message} — check your internet connection or use the JSON below.`;
+  }finally{
+    btn.disabled=false;
+    btn.textContent='Save Profile & Trigger n8n Workflow';
+  }
   updateSteps();
 }
 </script>
